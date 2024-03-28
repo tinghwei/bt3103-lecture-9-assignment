@@ -48,6 +48,8 @@ export default {
   data() {
     return {
       user: false,
+      email: "", // Add this line
+      password: "", // And this line
     };
   },
 
