@@ -1,28 +1,7 @@
 <template>
   <div style="text-align: center">
     <h1 id="mainHead">CRYPTO_PAPER_PORTFOLIO</h1>
-    <div>
-      <input
-        type="email"
-        v-model="email"
-        id="emailInput"
-        placeholder="Enter your email"
-      />
-      <br />
-      <br />
-      <input
-        type="password"
-        v-model="password"
-        id="passwordInput"
-        placeholder="Enter your password"
-      />
-      <br />
-      <br />
-      <button id="btn" @click="signInWithEmail">Sign In with Email</button>
-      <br /><br />
-      <button id="btn" @click="signInWithGoogle">Sign In with Google</button>
-      <br /><br />
-    </div>
+    <div id="firebaseui-auth-container"></div>
     <div id="pagecontent">
       Crypto Paper Portfolio (CPP) is an app to track your crypto portfolio.
       <br />
@@ -37,10 +16,11 @@
 import {
   getAuth,
   onAuthStateChanged,
-  signInWithPopup,
+  EmailAuthProvider,
   GoogleAuthProvider,
-  signInWithEmailAndPassword,
 } from "firebase/auth";
+import * as firebaseui from "firebaseui";
+import "firebaseui/dist/firebaseui.css";
 
 export default {
   name: "Login",
@@ -48,42 +28,24 @@ export default {
   data() {
     return {
       user: false,
-      email: "", // Add this line
-      password: "", // And this line
     };
   },
 
   mounted() {
     const auth = getAuth();
+    var ui = firebaseui.auth.AuthUI.getInstance();
+    if (!ui) ui = new firebaseui.auth.AuthUI(auth);
+    const uiConfig = {
+      signInSuccessUrl: "/home",
+      signInOptions: [
+        EmailAuthProvider.PROVIDER_ID,
+        GoogleAuthProvider.PROVIDER_ID,
+      ],
+    };
+    ui.start("#firebaseui-auth-container", uiConfig);
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user;
-      }
+      if (user) this.user = user;
     });
-  },
-
-  methods: {
-    signInWithGoogle() {
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          this.$router.push({ name: "Home" });
-        })
-        .catch((error) => {
-          console.error("Google sign-in error:", error);
-        });
-    },
-    signInWithEmail() {
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, this.email, this.password)
-        .then((result) => {
-          this.$router.push({ name: "Home" });
-        })
-        .catch((error) => {
-          console.error("Email sign-in error:", error);
-        });
-    },
   },
 };
 </script>
@@ -95,6 +57,7 @@ export default {
 }
 
 #pagecontent {
+  padding-top: 50px;
   height: 100px;
   font-size: larger;
   font-weight: bolder;
@@ -102,6 +65,7 @@ export default {
 }
 
 #mainHead {
+  background-color: #818cf8;
   text-align: center;
   text-shadow: 2px 2px grey;
 }

@@ -104,7 +104,6 @@ export default {
 h1,
 h2 {
   text-align: center;
-  background-color: #818cf8;
   font: 700;
   display: block;
   font-size: 2em;
