@@ -59,6 +59,7 @@ export default {
     async fetchAndUpdateData(useremail) {
       try {
         const querySnapshot = await getDocs(collection(db, String(useremail)));
+        this.tableRows = [];
         for (const doc of querySnapshot.docs) {
           const data = doc.data();
           const { Coin, Ticker, Buy_Price, Buy_Quantity } = data;
@@ -68,7 +69,7 @@ export default {
             const currentPrice = x[499][4];
             const profit = Math.round(
               Buy_Quantity * (parseFloat(currentPrice) - parseFloat(Buy_Price))
-            );
+            )
             this.tableRows.push({
               coin: Coin,
               ticker: Ticker,
@@ -104,6 +105,7 @@ export default {
 h1,
 h2 {
   text-align: center;
+  background-color: #818cf8;
   font: 700;
   display: block;
   font-size: 2em;
